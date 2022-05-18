@@ -23,3 +23,16 @@ exports.create = (req, res) => {
     res.json(blog);
   });
 };
+
+exports.getAllBlogs = (req, res) => {
+  Blogs.find({}).exec((err, blogs) => {
+    res.json(blogs);
+  });
+};
+
+exports.singleBlog = (req, res) => {
+  const { slug } = req.params;
+  Blogs.findOne({ slug }).exec((err, blog) => {
+    res.json(blog);
+  });
+};
