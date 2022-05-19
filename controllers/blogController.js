@@ -1,11 +1,15 @@
 const slugify = require("slugify");
 const Blogs = require("../models/blogs");
+const { v4: uuidv4 } = require("uuid");
 
-exports.create = (req, res) => {
+exports.createBlog = (req, res) => {
   const { title, content, author } = req.body;
-  const slug = slugify(title);
+  let slug = slugify(title);
 
   // validate
+  if (!slug) {
+    slug = uuidv4();
+  }
   switch (true) {
     case !title:
       return res.status(400).json({ error: "Please input your title." });
@@ -34,5 +38,29 @@ exports.singleBlog = (req, res) => {
   const { slug } = req.params;
   Blogs.findOne({ slug }).exec((err, blog) => {
     res.json(blog);
+  });
+};
+
+exports.editBlog = (req, res) => {
+  const { slug } = req.params;
+  const { title, content, author } = req.body;
+  Blogs.findOneAndUpdate(
+    { slug },
+    { title, content, author },
+    { new: true }
+  ).exec((err, blog) => {
+    if (err) console.log(err);
+
+    res.json(blog);
+  });
+};
+
+exports.deleteBlog = (req, res) => {
+  const { slug } = req.params;
+  Blogs.findOneAndRemove({ slug }).exec((err, blog) => {
+    if (err) {
+      console.log(err);
+    }
+    res.json({ message: "The blog has been deleted." });
   });
 };
