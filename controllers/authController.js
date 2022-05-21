@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const expressJWT = require("express-jwt");
 
 exports.login = (req, res) => {
   const { username, password } = req.body;
@@ -12,3 +13,10 @@ exports.login = (req, res) => {
     return res.status(400).json({ error: "Invalid Password!" });
   }
 };
+
+// Check token
+exports.requireLogin = expressJWT({
+  secret: process.env.JWT_SECRET,
+  algorithms: ["HS256"],
+  userProperty: "auth",
+});

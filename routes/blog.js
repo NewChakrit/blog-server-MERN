@@ -8,10 +8,14 @@ const {
   editBlog,
 } = require("../controllers/blogController");
 
+const { requireLogin } = require("../controllers/authController");
+
 router.get("/blog/:slug", singleBlog);
 router.get("/blogs", getAllBlogs);
-router.post("/create", createBlog);
-router.put("/edit/:slug", editBlog);
-router.delete("/blog/:slug", deleteBlog);
+
+// For Admin
+router.post("/create", requireLogin, createBlog);
+router.put("/edit/:slug", requireLogin, editBlog);
+router.delete("/blog/:slug", requireLogin, deleteBlog);
 
 module.exports = router;
